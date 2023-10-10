@@ -4,11 +4,15 @@ import com.alex.cinemachallange.domain.Movie;
 import com.alex.cinemachallange.domain.Planner;
 import com.alex.cinemachallange.domain.Room;
 import com.alex.cinemachallange.domain.Show;
+import com.alex.cinemachallange.exceptions.InvalidPremiereTimeException;
+import com.alex.cinemachallange.exceptions.RoomUnavailableException;
+import com.alex.cinemachallange.exceptions.ShowOverlapException;
 import com.alex.cinemachallange.repository.ShowRepository;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service to handle the scheduling and business rules for shows.
@@ -31,35 +35,43 @@ public class ShowSchedulingService {
    * @param endTime The end of the show.
    * @return the scheduled show if successful; otherwise null.
    */
+  @Transactional
   public Optional<Show> scheduleShow(Planner planner, Movie movie, Room room, LocalDateTime startTime, LocalDateTime endTime) {
-    // First, let's check room availability.
+    // Room availability check.
     if (!room.isAvailableOn(startTime.toLocalDate())) {
-      return Optional.empty();  // The room is not available on this date.
+      throw new RoomUnavailableException("Room is not available on this date.");
     }
 
-    // Check if it's a premier movie and if the time is appropriate.
-    Show potentialShow;
-    try {
-      potentialShow = new Show(movie, room, startTime, endTime, planner);
-    } catch (IllegalArgumentException e) {
-      return Optional.empty();  // The scheduled time is not after working hours for a premier.
-    }
+    // Premier movie time validation.
+    validatePremiereTime(movie, startTime, endTime);
 
-    // Now, let's check overlaps with existing shows.
+    // Overlapping shows check.
     LocalDateTime cleaningEndTime = endTime.plus(room.getCleaningDuration());
+    validateOverlappingShows(room, startTime, cleaningEndTime);
+
+    // Schedule the show.
+    Show scheduledShow = new Show(movie, room, startTime, endTime, planner);
+    showRepository.saveAll(Collections.singletonList(scheduledShow));
+
+    return Optional.of(scheduledShow);
+  }
+
+  private void validatePremiereTime(Movie movie, LocalDateTime startTime, LocalDateTime endTime) {
+    if (movie.isPremier() && !(startTime.toLocalTime().isAfter(Show.PREMIERE_START) && endTime.toLocalTime().isBefore(Show.PREMIERE_END))) {
+      throw new InvalidPremiereTimeException("Premier shows must be scheduled between 17:00 and 21:00.");
+    }
+  }
+
+  private void validateOverlappingShows(Room room, LocalDateTime startTime, LocalDateTime cleaningEndTime) {
     List<Show> overlappingShows = showRepository.findByRoomAndStartTimeBetweenAndEndTimeBetween(
         room, startTime, cleaningEndTime, startTime, cleaningEndTime
     );
 
     for (Show show : overlappingShows) {
-      if (potentialShow.overlapsWith(show)) {
-        return Optional.empty();  // Overlaps with an existing show.
+      if (show.getStartTime().isBefore(cleaningEndTime) && show.getEndTime().isAfter(startTime)) {
+        throw new ShowOverlapException("The show overlaps with another scheduled show.");
       }
     }
-
-    // If we've passed all the checks, we can schedule the show.
-    showRepository.saveAll(Collections.singletonList(potentialShow));
-    return Optional.of(potentialShow);
   }
 
   /**
@@ -70,7 +82,7 @@ public class ShowSchedulingService {
    * @param endTime The end of the show.
    * @return the rescheduled show if successful.
    */
-  public Optional<Show> rescheduleShow(Show show,  LocalDateTime startTime, LocalDateTime endTime) {
+  public Optional<Show> rescheduleShow(Show show, LocalDateTime startTime, LocalDateTime endTime) {
     // todo
     return Optional.empty();
   }
@@ -88,10 +100,6 @@ public class ShowSchedulingService {
 
   /**
    *
-   * @param room
-   * @param startTime
-   * @param endTime
-   * @return
    */
   public List<Show> fetchShowsForRoomAndTimeFrame(Room room, LocalDateTime startTime, LocalDateTime endTime) {
     // todo
@@ -100,9 +108,6 @@ public class ShowSchedulingService {
 
   /**
    *
-   * @param movie
-   * @param planner
-   * @return
    */
   public List<Show> fetchShowsForMovieOrPlanner(Movie movie, Planner planner) {
     // Implementation goes here...
