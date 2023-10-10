@@ -27,7 +27,7 @@ public class Planner {
    * @return The scheduled show or null if scheduling was not possible.
    */
   public Show scheduleShow(Movie movie, Room room, LocalDateTime startTime, LocalDateTime endTime, boolean isPremiere) {
-    Show potentialShow = new Show(movie, room, startTime, endTime, this, isPremiere);
+    Show potentialShow = new Show(movie, room, startTime, endTime, this);
     if (room.isAvailableOn(startTime.toLocalDate())) {
       // If all constraints are satisfied:
       return potentialShow;

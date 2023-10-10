@@ -3,8 +3,6 @@ package com.alex.cinemachallange.domain;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.UUID;
 
 /**
@@ -21,7 +19,6 @@ public class Show {
     private final LocalDateTime startTime;
     private final LocalDateTime endTime;
     private final Planner scheduledBy;
-    private final boolean isPremier;
 
 
     /**
@@ -32,18 +29,16 @@ public class Show {
      * @param startTime Start time of the movie
      * @param endTime End time of the movie
      * @param scheduledBy Planner who scheduled the movie
-     * @param isPremier Whether the show is a premiere
      */
-    public Show(Movie movie, Room room, LocalDateTime startTime, LocalDateTime endTime, Planner scheduledBy, boolean isPremier) {
+    public Show(Movie movie, Room room, LocalDateTime startTime, LocalDateTime endTime, Planner scheduledBy) {
         this.id = String.valueOf(UUID.randomUUID());
         this.movie = movie;
         this.room = room;
         this.startTime = startTime;
         this.endTime = endTime;
         this.scheduledBy = scheduledBy;
-        this.isPremier = isPremier;
 
-        if (isPremier && !(startTime.toLocalTime().isAfter(PREMIERE_START) && endTime.toLocalTime().isBefore(PREMIERE_END))) {
+        if (movie.isPremier() && !(startTime.toLocalTime().isAfter(PREMIERE_START) && endTime.toLocalTime().isBefore(PREMIERE_END))) {
             throw new IllegalArgumentException("Premier shows must be scheduled between 17:00 and 21:00.");
         }
     }
@@ -83,7 +78,4 @@ public class Show {
         return scheduledBy;
     }
 
-    public boolean isPremier() {
-        return isPremier;
-    }
 }
