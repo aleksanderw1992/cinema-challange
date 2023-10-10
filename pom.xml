@@ -11,8 +11,8 @@
 	<groupId>com.alex</groupId>
 	<artifactId>cinema-challange</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>cinema-challange</name>
-	<description>Cinema challange first take</description>
+	<name>cinema-challenge</name>
+	<description>Cinema challenge first take</description>
 	<properties>
 		<java.version>21</java.version>
 	</properties>
