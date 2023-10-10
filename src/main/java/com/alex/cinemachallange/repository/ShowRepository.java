@@ -15,6 +15,12 @@ import java.util.List;
 public interface ShowRepository extends JpaRepository<Show, String> {
 
 
-    List<Show> findByRoomAndStartTimeBetweenAndEndTimeBetween(Room room, LocalDateTime startTime, LocalDateTime endTime, LocalDateTime startTime2, LocalDateTime endTime2);
+    List<Show> findByRoomAndStartTimeBetweenAndEndTimeBetween(Room room,
+        LocalDateTime startTime,
+        LocalDateTime endTime,
+        LocalDateTime startTime2,
+        LocalDateTime endTime2);
+
+
 
 }

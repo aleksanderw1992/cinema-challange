@@ -23,10 +23,9 @@ public class Planner {
    * @param room The room where the movie will be shown.
    * @param startTime Start of show
    * @param endTime End of show
-   * @param isPremiere If show is premiere
    * @return The scheduled show or null if scheduling was not possible.
    */
-  public Show scheduleShow(Movie movie, Room room, LocalDateTime startTime, LocalDateTime endTime, boolean isPremiere) {
+  public Show scheduleShow(Movie movie, Room room, LocalDateTime startTime, LocalDateTime endTime) {
     Show potentialShow = new Show(movie, room, startTime, endTime, this);
     if (room.isAvailableOn(startTime.toLocalDate())) {
       // If all constraints are satisfied:

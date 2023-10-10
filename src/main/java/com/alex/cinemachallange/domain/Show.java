@@ -1,5 +1,6 @@
 package com.alex.cinemachallange.domain;
 
+import com.alex.cinemachallange.exceptions.InvalidPremiereTimeException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -39,7 +40,7 @@ public class Show {
         this.scheduledBy = scheduledBy;
 
         if (movie.isPremier() && !(startTime.toLocalTime().isAfter(PREMIERE_START) && endTime.toLocalTime().isBefore(PREMIERE_END))) {
-            throw new IllegalArgumentException("Premier shows must be scheduled between 17:00 and 21:00.");
+            throw new InvalidPremiereTimeException("Premier shows must be scheduled between 17:00 and 21:00.");
         }
     }
 
