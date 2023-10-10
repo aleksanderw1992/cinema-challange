@@ -57,4 +57,33 @@ public class Show {
         return this.room.equals(otherShow.room) &&
                (this.startTime.isBefore(otherShow.endTime) && this.endTime.isAfter(otherShow.startTime));
     }
+    // getters & setters if exist
+
+    public String getId() {
+        return id;
+    }
+
+    public Movie getMovie() {
+        return movie;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public Planner getScheduledBy() {
+        return scheduledBy;
+    }
+
+    public boolean isPremier() {
+        return isPremier;
+    }
 }

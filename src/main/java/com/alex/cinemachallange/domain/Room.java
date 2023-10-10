@@ -31,4 +31,29 @@ public class Room {
     public boolean isAvailableOn(LocalDate date) {
         return !unavailableDates.contains(date);
     }
+  // getters & setters if exist
+
+  public String getId() {
+    return id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public Duration getCleaningDuration() {
+    return cleaningDuration;
+  }
+
+  public void setCleaningDuration(Duration cleaningDuration) {
+    this.cleaningDuration = cleaningDuration;
+  }
+
+  public List<LocalDate> getUnavailableDates() {
+    return unavailableDates;
+  }
+
+  public void setUnavailableDates(List<LocalDate> unavailableDates) {
+    this.unavailableDates = unavailableDates;
+  }
 }

@@ -34,5 +34,13 @@ public class Planner {
     }
     return null;
   }
+// getters & setters if exist
 
+  public String getId() {
+    return id;
+  }
+
+  public String getName() {
+    return name;
+  }
 }

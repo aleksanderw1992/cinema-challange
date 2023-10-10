@@ -21,4 +21,24 @@ public class Movie {
     this.requires3DGlasses = requires3DGlasses;
     this.isPremier = isPremier;
   }
+// getters & setters if exist
+  public String getId() {
+    return id;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public Duration getDuration() {
+    return duration;
+  }
+
+  public boolean isRequires3DGlasses() {
+    return requires3DGlasses;
+  }
+
+  public boolean isPremier() {
+    return isPremier;
+  }
 }
